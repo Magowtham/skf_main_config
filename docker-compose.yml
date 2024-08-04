@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  skf_mqtt_broker:
+    image: eclipse-mosquitto
+    container_name: skf_mqtt_broker
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto:/etc/mosquitto
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  skf_mqtt_client:
+    image: magowtham/skf-skf_mqtt
+    container_name: skf-mqtt
+    depends_on:
+      - skf_mqtt_broker
+    environment:
+      - DB_URI=mongodb+srv://test:7sSDAEBmVYu8nmuG@cluster1.wlyepas.mongodb.net/skf?retryWrites=true&w=majority&appName=Cluster1
+      - DB_NAME=skf
+      - MQTT_CLIENT_ID=server
+      - MQTT_HOST=skf_mqtt_broker
+      - MQTT_PORT=1883
+      - MQTT_KEEP_ALIVE=10
